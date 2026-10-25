@@ -1,0 +1,516 @@
+#!/usr/bin/env python3
+"""Script to write the standalone landing page template."""
+
+TEMPLATE = r"""{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AuditIntel &mdash; Enterprise Audit Analytics &amp; Continuous Control Monitoring</title>
+    <meta name="description" content="AuditIntel automates 100% ledger testing with 11 control heuristics, Benford Law anomaly detection, 3-way match verification, and board-ready PDF reports. SOX 404 aligned." />
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --blue:#2563eb;--blue-dk:#1d4ed8;--blue-lt:#eff6ff;
+            --s900:#0f172a;--s700:#334155;--s500:#64748b;--s400:#94a3b8;
+            --s200:#e2e8f0;--s100:#f1f5f9;--s50:#f8fafc;--white:#fff;
+            --green:#059669;--amber:#d97706;--rose:#dc2626;--purple:#7c3aed;
+        }
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:var(--white);color:var(--s900);overflow-x:hidden;line-height:1.6}
+
+        /* canvas */
+        #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+        /* NAV */
+        .nav{
+            position:fixed;top:0;left:0;right:0;z-index:200;
+            display:flex;align-items:center;justify-content:space-between;
+            padding:0 6%;height:66px;
+            background:rgba(255,255,255,.92);backdrop-filter:blur(18px);
+            border-bottom:1px solid var(--s200);transition:box-shadow .3s
+        }
+        .nav.stuck{box-shadow:0 4px 24px rgba(15,23,42,.07)}
+        .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+        .brand-icon{
+            width:36px;height:36px;border-radius:10px;background:var(--blue);
+            display:flex;align-items:center;justify-content:center;flex-shrink:0
+        }
+        .brand-icon svg{width:20px;height:20px;color:#fff}
+        .brand-name{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.25rem;color:var(--s900);letter-spacing:-.4px}
+        .brand-name em{color:var(--blue);font-style:normal}
+        .nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+        .nav-links a{
+            text-decoration:none;color:var(--s700);font-size:.875rem;
+            font-weight:500;padding:7px 14px;border-radius:8px;
+            transition:background .18s,color .18s
+        }
+        .nav-links a:hover{background:var(--s100);color:var(--s900)}
+        .nav-links .cta{background:var(--blue);color:#fff;font-weight:700}
+        .nav-links .cta:hover{background:var(--blue-dk)}
+        .nav-ham{
+            display:none;background:none;border:1.5px solid var(--s200);
+            border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--s700);
+            align-items:center;gap:6px;font-size:.82rem;font-weight:600
+        }
+        .nav-ham svg{width:16px;height:16px}
+
+        /* HERO */
+        .hero{
+            position:relative;z-index:1;
+            min-height:100vh;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;text-align:center;
+            padding:120px 6% 80px
+        }
+        .hero-pill{
+            display:inline-flex;align-items:center;gap:7px;
+            background:var(--blue-lt);color:var(--blue);font-size:.76rem;
+            font-weight:700;padding:5px 16px;border-radius:999px;
+            border:1px solid rgba(37,99,235,.18);margin-bottom:30px;
+            letter-spacing:.4px;animation:fadeDown .6s ease both
+        }
+        .hero-pill svg{width:13px;height:13px}
+        h1{
+            font-family:'Outfit',sans-serif;
+            font-size:clamp(2.4rem,6vw,4.4rem);font-weight:900;
+            line-height:1.08;letter-spacing:-1.8px;max-width:900px;
+            animation:fadeUp .7s .1s ease both
+        }
+        h1 .grad{
+            background:linear-gradient(135deg,#2563eb,#7c3aed);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text
+        }
+        .hero-sub{
+            margin-top:22px;font-size:1.08rem;color:var(--s500);
+            max-width:600px;line-height:1.72;
+            animation:fadeUp .7s .2s ease both
+        }
+        .hero-btns{
+            display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;
+            justify-content:center;animation:fadeUp .7s .3s ease both
+        }
+        .btn-p{
+            display:inline-flex;align-items:center;gap:9px;
+            background:var(--blue);color:#fff;font-weight:700;font-size:1rem;
+            padding:14px 32px;border-radius:12px;text-decoration:none;
+            box-shadow:0 4px 16px rgba(37,99,235,.32);
+            transition:background .2s,transform .2s,box-shadow .2s
+        }
+        .btn-p:hover{background:var(--blue-dk);transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,99,235,.38)}
+        .btn-s{
+            display:inline-flex;align-items:center;gap:9px;
+            background:#fff;color:var(--s700);font-weight:600;font-size:.95rem;
+            padding:14px 28px;border-radius:12px;text-decoration:none;
+            border:1.5px solid var(--s200);
+            transition:border-color .2s,color .2s,background .2s,transform .2s
+        }
+        .btn-s:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt);transform:translateY(-2px)}
+        .btn-p svg,.btn-s svg,.btn-cta svg{width:18px;height:18px}
+
+        .stats-strip{
+            display:flex;align-items:center;justify-content:center;
+            flex-wrap:wrap;gap:40px;
+            margin-top:60px;padding-top:40px;
+            border-top:1px solid var(--s200);
+            animation:fadeUp .7s .4s ease both
+        }
+        .stat-val{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:var(--s900);line-height:1}
+        .stat-lbl{font-size:.76rem;color:var(--s500);font-weight:500;margin-top:5px;letter-spacing:.3px}
+
+        .scroll-cue{
+            position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+            display:flex;flex-direction:column;align-items:center;gap:5px;
+            animation:bob 2s ease-in-out infinite
+        }
+        .scroll-cue span{font-size:.7rem;color:var(--s400);letter-spacing:.5px}
+        .scroll-cue svg{width:18px;height:18px;color:var(--s400)}
+        @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+        /* SECTIONS */
+        .sec{position:relative;z-index:1;padding:96px 6%}
+        .sec-alt{background:var(--s50)}
+        .sec-lbl{display:inline-block;font-size:.73rem;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+        .sec-title{font-family:'Outfit',sans-serif;font-size:clamp(1.75rem,3.5vw,2.55rem);font-weight:800;color:var(--s900);letter-spacing:-.7px;line-height:1.2;margin-bottom:14px}
+        .sec-sub{font-size:.97rem;color:var(--s500);max-width:560px;line-height:1.7}
+        .sec-head{text-align:center;margin-bottom:56px}
+        .sec-head .sec-sub{margin:0 auto}
+        .divider{width:52px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--purple));margin:0 auto 16px}
+
+        /* FEATURES */
+        .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;max-width:1200px;margin:0 auto}
+        .card{
+            background:var(--white);border:1px solid var(--s200);border-radius:16px;padding:28px;
+            transition:border-color .22s,box-shadow .22s,transform .22s
+        }
+        .card:hover{border-color:var(--blue);box-shadow:0 12px 36px rgba(37,99,235,.09);transform:translateY(-4px)}
+        .card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+        .card-icon svg{width:24px;height:24px}
+        .i-blue{background:#eff6ff;color:var(--blue)}
+        .i-green{background:#ecfdf5;color:var(--green)}
+        .i-amber{background:#fffbeb;color:var(--amber)}
+        .i-rose{background:#fff1f2;color:var(--rose)}
+        .i-purple{background:#f5f3ff;color:var(--purple)}
+        .i-slate{background:var(--s100);color:var(--s700)}
+        .card-title{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:var(--s900);margin-bottom:8px}
+        .card-desc{font-size:.86rem;color:var(--s500);line-height:1.65}
+
+        /* STEPS */
+        .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));max-width:1100px;margin:0 auto;position:relative}
+        .steps::before{content:'';position:absolute;top:35px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--s200),transparent)}
+        .step{text-align:center;padding:0 18px;position:relative}
+        .step-num{
+            width:70px;height:70px;border-radius:50%;background:var(--white);
+            border:2px solid var(--s200);margin:0 auto 20px;
+            display:flex;align-items:center;justify-content:center;
+            font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;
+            color:var(--blue);position:relative;z-index:2;
+            transition:border-color .22s,box-shadow .22s
+        }
+        .step:hover .step-num{border-color:var(--blue);box-shadow:0 0 0 7px rgba(37,99,235,.09)}
+        .step-t{font-family:'Outfit',sans-serif;font-size:.93rem;font-weight:700;color:var(--s900);margin-bottom:7px}
+        .step-d{font-size:.8rem;color:var(--s500);line-height:1.6}
+
+        /* HEURISTICS */
+        .grid-h{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:1200px;margin:0 auto}
+        .hcard{
+            background:var(--white);border:1px solid var(--s200);border-radius:12px;
+            padding:18px;display:flex;gap:13px;align-items:flex-start;
+            transition:border-color .2s,box-shadow .2s
+        }
+        .hcard:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(37,99,235,.08)}
+        .hnum{
+            flex-shrink:0;width:32px;height:32px;border-radius:8px;
+            background:var(--blue-lt);color:var(--blue);
+            font-family:'Outfit',sans-serif;font-weight:800;font-size:.82rem;
+            display:flex;align-items:center;justify-content:center
+        }
+        .hname{font-weight:600;font-size:.86rem;color:var(--s900);line-height:1.4}
+        .hdesc{font-size:.76rem;color:var(--s500);margin-top:3px;line-height:1.5}
+
+        /* CTA */
+        .cta-sec{
+            position:relative;z-index:1;padding:96px 6%;text-align:center;
+            background:linear-gradient(135deg,#1e3a8a,#1d4ed8 45%,#2563eb 75%,#3b82f6)
+        }
+        .cta-pill{
+            display:inline-flex;align-items:center;gap:6px;
+            background:rgba(255,255,255,.14);color:rgba(255,255,255,.9);
+            font-size:.75rem;font-weight:700;padding:5px 15px;border-radius:999px;
+            border:1px solid rgba(255,255,255,.22);margin-bottom:22px;position:relative
+        }
+        .cta-pill svg{width:13px;height:13px}
+        .cta-h{font-family:'Outfit',sans-serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:900;color:#fff;letter-spacing:-1px;line-height:1.15;margin-bottom:14px;position:relative}
+        .cta-p{font-size:.97rem;color:rgba(255,255,255,.72);max-width:480px;margin:0 auto 36px;line-height:1.72;position:relative}
+        .btn-cta{
+            display:inline-flex;align-items:center;gap:10px;
+            background:#fff;color:var(--blue);font-weight:800;font-size:1.05rem;
+            padding:16px 40px;border-radius:12px;text-decoration:none;
+            box-shadow:0 8px 28px rgba(0,0,0,.18);position:relative;
+            transition:transform .2s,box-shadow .2s
+        }
+        .btn-cta:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.24)}
+
+        /* FOOTER */
+        .footer{position:relative;z-index:1;background:var(--s900);color:var(--s400);padding:56px 6% 28px}
+        .ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,.07)}
+        .ft-brand{font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;margin-bottom:10px}
+        .ft-brand em{color:#60a5fa;font-style:normal}
+        .ft-desc{font-size:.83rem;color:#64748b;line-height:1.65;max-width:250px}
+        .ft-col-h{font-size:.73rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:#64748b;margin-bottom:14px}
+        .ft-links{list-style:none;display:flex;flex-direction:column;gap:9px}
+        .ft-links a{text-decoration:none;color:#64748b;font-size:.86rem;transition:color .18s}
+        .ft-links a:hover{color:#fff}
+        .ft-bot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:26px;font-size:.78rem;color:#475569}
+
+        /* ANIMATIONS */
+        @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .nav-links{display:none}
+            .nav-ham{display:flex}
+            .steps::before{display:none}
+            .steps{gap:28px}
+            .ft-top{grid-template-columns:1fr 1fr}
+            .stats-strip{gap:22px}
+        }
+        @media(max-width:480px){
+            .ft-top{grid-template-columns:1fr}
+            .btn-p,.btn-s{width:100%;justify-content:center}
+        }
+    </style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- ========================= NAVBAR ========================= -->
+<nav class="nav" id="nav">
+    <a href="/" class="brand">
+        <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <span class="brand-name">Audit<em>Intel</em></span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#heuristics">Heuristics</a></li>
+        <li><a href="{% url 'dashboard_overview' %}" class="cta">Get Started &rarr;</a></li>
+    </ul>
+    <button class="nav-ham" id="hamburger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        Menu
+    </button>
+</nav>
+
+<!-- ========================= HERO ========================= -->
+<section class="hero">
+    <div class="hero-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        SOX 404 &middot; PCAOB &middot; COSO Aligned
+    </div>
+
+    <h1>
+        Internal Audit &amp; <span class="grad">Continuous Control</span><br/>Monitoring, Automated.
+    </h1>
+
+    <p class="hero-sub">
+        Stop auditing 5% of your ledger hoping for the best. AuditIntel tests <strong>100%</strong> of invoices, payments, and purchase orders &mdash; detecting fraud patterns, 3-way match breaks, and anomalies in real time.
+    </p>
+
+    <div class="hero-btns">
+        <a href="{% url 'dashboard_overview' %}" class="btn-p">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            Get Started &mdash; Launch Audit Workspace
+        </a>
+        <a href="#how-it-works" class="btn-s">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            See How It Works
+        </a>
+    </div>
+
+    <div class="stats-strip">
+        <div><div class="stat-val">100%</div><div class="stat-lbl">Population Coverage</div></div>
+        <div><div class="stat-val">11</div><div class="stat-lbl">Automated Heuristics</div></div>
+        <div><div class="stat-val">0&ndash;100</div><div class="stat-lbl">Explainable Risk Score</div></div>
+        <div><div class="stat-val">PDF</div><div class="stat-lbl">Board-Ready Reports</div></div>
+        <div><div class="stat-val">SOX</div><div class="stat-lbl">404 Compliant</div></div>
+    </div>
+
+    <div class="scroll-cue">
+        <span>SCROLL TO EXPLORE</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+</section>
+
+<!-- ========================= FEATURES ========================= -->
+<section class="sec" id="features">
+    <div class="sec-head">
+        <div class="sec-lbl">Core Capabilities</div>
+        <div class="divider"></div>
+        <h2 class="sec-title">Everything your audit team needs</h2>
+        <p class="sec-sub">From ledger ingestion to board-ready PDF reports &mdash; the complete internal audit analytics stack in one platform.</p>
+    </div>
+    <div class="grid-3">
+        <div class="card">
+            <div class="card-icon i-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <div class="card-title">11 Automated Control Rules</div>
+            <div class="card-desc">Detect duplicate invoices, split purchase structuring, weekend disbursements, 3-way match breaks and more &mdash; executed across 100% of transactions in milliseconds.</div>
+        </div>
+        <div class="card">
+            <div class="card-icon i-green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="card-title">Benford&rsquo;s Law Anomaly Detection</div>
+            <div class="card-desc">Apply first-digit frequency analysis and unsupervised Isolation Forest to surface statistically abnormal disbursement patterns invisible to human review.</div>
+        </div>
+        <div class="card">
+            <div class="card-icon i-amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="card-title">Exception Investigation Workspace</div>
+            <div class="card-desc">Full 3-way lineage trace (PO &rarr; Invoice &rarr; Payment), explainable risk score breakdown, and structured working-paper workflow with immutable audit trail logs.</div>
+        </div>
+        <div class="card">
+            <div class="card-icon i-rose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="card-title">Board-Ready PDF Reports</div>
+            <div class="card-desc">Generate print-ready executive audit reports with risk charts and exception tables &mdash; compliant with SOX 404, PCAOB, and COSO frameworks.</div>
+        </div>
+        <div class="card">
+            <div class="card-icon i-purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div class="card-title">Interactive SQL Analytics Lab</div>
+            <div class="card-desc">Execute live SQL audit queries directly against the ledger database. Pre-built heuristic queries included &mdash; or write your own investigative SQL.</div>
+        </div>
+        <div class="card">
+            <div class="card-icon i-slate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+            </div>
+            <div class="card-title">ETL Pipeline &mdash; CSV / Excel / JSON</div>
+            <div class="card-desc">Upload your enterprise general ledger files in any standard format. The Pandas ETL pipeline normalises, validates, and stages data for immediate audit execution.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================= HOW IT WORKS ========================= -->
+<section class="sec sec-alt" id="how-it-works">
+    <div class="sec-head">
+        <div class="sec-lbl">Audit Workflow</div>
+        <div class="divider"></div>
+        <h2 class="sec-title">From raw ledger to audit report in 5 steps</h2>
+        <p class="sec-sub">A standardised, repeatable audit playbook designed for real enterprise internal audit teams.</p>
+    </div>
+    <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-t">Ingest Ledger Data</div><div class="step-d">Upload CSV, Excel, or JSON via the ETL pipeline &mdash; or load 1,000 synthetic INR records to explore instantly.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-t">Run Control Engine</div><div class="step-d">All 11 heuristics execute across 100% of transactions. Every record receives an explainable 0&ndash;100 risk score.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-t">Investigate Exceptions</div><div class="step-d">Filter by severity, search by vendor, and click Investigate to inspect 3-way match lineage and score components.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-t">Document Working Papers</div><div class="step-d">Update status, assign auditors, and write review notes into the immutable audit trail log.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-t">Export Board Report</div><div class="step-d">Generate a print-ready executive PDF or download raw CSV for the Board Audit Committee or regulators.</div></div>
+    </div>
+</section>
+
+<!-- ========================= HEURISTICS ========================= -->
+<section class="sec" id="heuristics">
+    <div class="sec-head">
+        <div class="sec-lbl">Detection Logic</div>
+        <div class="divider"></div>
+        <h2 class="sec-title">The 11 Internal Control Heuristics</h2>
+        <p class="sec-sub">Every transaction is tested against these deterministic rules and statistical models simultaneously.</p>
+    </div>
+    <div class="grid-h">
+        <div class="hcard"><div class="hnum">01</div><div><div class="hname">Duplicate Invoice Detection</div><div class="hdesc">Flags invoices with identical vendor, amount, and date representing double-billing or accidental resubmission.</div></div></div>
+        <div class="hcard"><div class="hnum">02</div><div><div class="hname">Duplicate Payment Detection</div><div class="hdesc">Identifies vendor payments processed more than once for the same invoice &mdash; a critical disbursement control failure.</div></div></div>
+        <div class="hcard"><div class="hnum">03</div><div><div class="hname">3-Way Match Verification</div><div class="hdesc">Reconciles PO quantity and price against invoice amount and payment &mdash; flags deviations exceeding tolerance thresholds.</div></div></div>
+        <div class="hcard"><div class="hnum">04</div><div><div class="hname">Split Purchase Structuring</div><div class="hdesc">Detects multiple POs to the same vendor just below executive authorization ceilings &mdash; a classic approval-bypass pattern.</div></div></div>
+        <div class="hcard"><div class="hnum">05</div><div><div class="hname">Weekend &amp; Holiday Disbursements</div><div class="hdesc">Flags payments or invoices raised on non-business days when authorisation controls are typically inactive.</div></div></div>
+        <div class="hcard"><div class="hnum">06</div><div><div class="hname">Round-Sum Invoice Analysis</div><div class="hdesc">Identifies discretionary invoices with perfectly round amounts (e.g. &#8377;50,000.00), a common indicator of fictitious billing.</div></div></div>
+        <div class="hcard"><div class="hnum">07</div><div><div class="hname">High-Risk Vendor Screening</div><div class="hdesc">Checks transactions against vendors flagged as high-risk, dormant, restricted, or with missing PAN/GST registration.</div></div></div>
+        <div class="hcard"><div class="hnum">08</div><div><div class="hname">Benford&rsquo;s Law Analysis</div><div class="hdesc">Applies first-digit frequency distribution to flag amounts deviating significantly from naturally occurring digit patterns.</div></div></div>
+        <div class="hcard"><div class="hnum">09</div><div><div class="hname">Employee Expense Outliers</div><div class="hdesc">Flags claims statistically extreme relative to historical averages, or duplicate expense submissions by the same employee.</div></div></div>
+        <div class="hcard"><div class="hnum">10</div><div><div class="hname">Sequential Invoice Anomalies</div><div class="hdesc">Detects consecutive invoice IDs from the same vendor in tight timeframes, suggesting fabricated invoice sequences.</div></div></div>
+        <div class="hcard"><div class="hnum">11</div><div><div class="hname">Isolation Forest ML Detection</div><div class="hdesc">Applies unsupervised machine learning to identify statistically abnormal transactions without requiring historical fraud labels.</div></div></div>
+    </div>
+</section>
+
+<!-- ========================= CTA ========================= -->
+<section class="cta-sec">
+    <div class="cta-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Zero setup required &middot; Start in 30 seconds
+    </div>
+    <h2 class="cta-h">Ready to audit your<br/>entire ledger?</h2>
+    <p class="cta-p">Load the interactive workspace, generate 1,000 synthetic INR transactions, and see all 11 audit heuristics fire in real time &mdash; entirely in your browser.</p>
+    <a href="{% url 'dashboard_overview' %}" class="btn-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Get Started &mdash; Open Audit Workspace
+    </a>
+</section>
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="footer">
+    <div class="ft-top">
+        <div>
+            <div class="ft-brand">Audit<em>Intel</em></div>
+            <p class="ft-desc">Enterprise-grade continuous control monitoring and internal audit analytics platform. Built for SOX 404, PCAOB, and COSO-aligned audit teams.</p>
+        </div>
+        <div>
+            <div class="ft-col-h">Platform</div>
+            <ul class="ft-links">
+                <li><a href="{% url 'dashboard_overview' %}">Executive Dashboard</a></li>
+                <li><a href="{% url 'dashboard_exceptions' %}">Audit Exceptions</a></li>
+                <li><a href="{% url 'dashboard_financial' %}">Financial Analysis</a></li>
+                <li><a href="{% url 'vendor_risk_matrix' %}">Vendor Risk Matrix</a></li>
+            </ul>
+        </div>
+        <div>
+            <div class="ft-col-h">Analytics</div>
+            <ul class="ft-links">
+                <li><a href="{% url 'sql_explorer' %}">SQL Analytics Lab</a></li>
+                <li><a href="{% url 'etl_upload' %}">ETL Pipeline</a></li>
+                <li><a href="{% url 'reports_index' %}">Reports &amp; PDF Export</a></li>
+                <li><a href="{% url 'transaction_list' %}">Financial Records</a></li>
+            </ul>
+        </div>
+        <div>
+            <div class="ft-col-h">Governance</div>
+            <ul class="ft-links">
+                <li><a href="{% url 'audit_policy' %}">SOX 404 Policy</a></li>
+                <li><a href="{% url 'interview_prep' %}">Audit Methodology</a></li>
+                <li><a href="{% url 'login' %}">Auditor Login</a></li>
+                <li><a href="mailto:audit-desk@internal-controls.org">Contact Desk</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="ft-bot">
+        <span>&copy; <span id="yr"></span> AuditIntel &mdash; Internal Controls &amp; Continuous Assurance Platform</span>
+        <span>SOX 404 &middot; PCAOB &middot; COSO &middot; IIA Standards</span>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 20));
+
+    // Ambient canvas
+    const cvs = document.getElementById('bg');
+    const cx = cvs.getContext('2d');
+    let W, H, pts = [];
+    const resize = () => { W = cvs.width = innerWidth; H = cvs.height = innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    for (let i = 0; i < 55; i++) pts.push({ x: Math.random()*2e3, y: Math.random()*2e3, r: Math.random()*1.5+.5, vx: (Math.random()-.5)*.22, vy: (Math.random()-.5)*.22 });
+    (function loop() {
+        cx.clearRect(0,0,W,H);
+        for (let i = 0; i < pts.length; i++) {
+            for (let j = i+1; j < pts.length; j++) {
+                const dx = pts[i].x-pts[j].x, dy = pts[i].y-pts[j].y;
+                const d = Math.hypot(dx,dy);
+                if (d < 175) { cx.beginPath(); cx.strokeStyle = `rgba(37,99,235,${.038*(1-d/175)})`; cx.lineWidth=.8; cx.moveTo(pts[i].x,pts[i].y); cx.lineTo(pts[j].x,pts[j].y); cx.stroke(); }
+            }
+        }
+        pts.forEach(p => {
+            cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fillStyle='rgba(37,99,235,.16)'; cx.fill();
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0) p.x=W; if(p.x>W) p.x=0;
+            if(p.y<0) p.y=H; if(p.y>H) p.y=0;
+        });
+        requestAnimationFrame(loop);
+    })();
+</script>
+</body>
+</html>
+"""
+
+with open('templates/dashboard/landing.html', 'w', encoding='utf-8') as f:
+    f.write(TEMPLATE)
+
+print(f"Written {len(TEMPLATE)} chars to landing.html")

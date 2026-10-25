@@ -1,0 +1,20 @@
+invoice_id,vendor_id,vendor_name,po_id,invoice_date,due_date,amount,tax_amount,payment_status,description
+INV-2026-8001,VEND-501,Tata Communications Ltd,PO-1001,2026-03-01,2026-03-31,145000.0,26100.0,PAID,Cloud & MPLS Network Infrastructure Q1
+INV-2026-8002,VEND-502,Infosys BPO Solutions,PO-1002,2026-03-02,2026-04-01,89000.0,16020.0,PAID,Customer Support Operations Mar 2026
+INV-2026-8003,VEND-503,L&T Heavy Engineering,PO-1003,2026-03-03,2026-04-02,320000.0,57600.0,PAID,Facility Maintenance & HVAC Works
+INV-2026-8004,VEND-504,Reliance Logistics Hub,PO-1004,2026-03-04,2026-04-03,76500.0,13770.0,PAID,Inter-State Freight & Delivery Services
+INV-2026-8005,VEND-505,Wipro Enterprise Services,PO-1005,2026-03-05,2026-04-04,112000.0,20160.0,PAID,IT Security Audit & Compliance Retainer
+INV-2026-8010,VEND-506,Apex Tech Services Mumbai,PO-1006,2026-03-10,2026-04-09,185000.0,33300.0,PAID,Server Virtualization Upgrades Part 1
+INV-2026-8011,VEND-506,Apex Tech Services Mumbai,PO-1006,2026-03-10,2026-04-09,185000.0,33300.0,PAID,Server Virtualization Upgrades Part 1 (Duplicate Bill)
+INV-2026-8020,VEND-507,Bharat Stationery & Supplies,PO-1007,2026-03-12,2026-04-11,49200.0,8856.0,PAID,Office Supplies Batch A
+INV-2026-8021,VEND-507,Bharat Stationery & Supplies,PO-1007,2026-03-12,2026-04-11,49800.0,8964.0,PAID,Office Supplies Batch B
+INV-2026-8022,VEND-507,Bharat Stationery & Supplies,PO-1007,2026-03-12,2026-04-11,49500.0,8910.0,PAID,Office Supplies Batch C
+INV-2026-8030,VEND-508,Zenith Consulting Pune,PO-1008,2026-03-15,2026-04-14,500000.0,90000.0,PAID,Management Strategy Advisory Services
+INV-2026-8031,VEND-508,Zenith Consulting Pune,PO-1008,2026-03-16,2026-04-15,1000000.0,180000.0,PENDING,Executive Leadership Coaching Program
+INV-2026-8040,VEND-509,Mahindra Power Systems,PO-1009,2026-03-18,2026-04-17,4750000.0,855000.0,PAID,Industrial Diesel Generator Backup Installation
+INV-2026-8051,VEND-510,Delta Electronics Bangalore,PO-1010,2026-03-20,2026-04-19,98400.0,17712.0,PAID,Semiconductor Component Kits
+INV-2026-8052,VEND-510,Delta Electronics Bangalore,PO-1010,2026-03-21,2026-04-20,89200.0,16056.0,PAID,Testing & Calibration Kits
+INV-2026-8053,VEND-510,Delta Electronics Bangalore,PO-1010,2026-03-22,2026-04-21,78900.0,14202.0,PAID,Optoelectronic Sensory Units
+INV-2026-8061,VEND-501,Tata Communications Ltd,PO-1001,2026-03-23,2026-04-22,128000.0,23040.0,PAID,Fiber Optic Line Bandwidth Expansion
+INV-2026-8062,VEND-502,Infosys BPO Solutions,PO-1002,2026-03-24,2026-04-23,94500.0,17010.0,PAID,Quarterly Helpdesk Operations Support
+INV-2026-8063,VEND-503,L&T Heavy Engineering,PO-1003,2026-03-25,2026-04-24,215000.0,38700.0,PENDING,Structural Steel Fabrications

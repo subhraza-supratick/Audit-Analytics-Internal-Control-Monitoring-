@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>{% block title %}Audit Analytics & Internal Control Monitoring System | Enterprise Edition{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Enterprise Audit Analytics and Continuous Internal Control Monitoring Platform with automated control testing, statistical anomaly scores, and real-time risk surveillance.{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/favicon.svg' %}">
+    <meta name="theme-color" content="#090d16">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- 3D Interactive Cyber-Audit Mesh Canvas -->
+    <canvas id="bgCanvas3D" class="bg-canvas-3d" aria-hidden="true"></canvas>
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation Drawer -->
+        <aside id="mainSidebar" class="sidebar" aria-label="Main Navigation">
+            <div class="sidebar-header">
+                <a href="{% url 'dashboard_overview' %}" class="sidebar-brand-link" title="Audit Analytics Dashboard">
+                    <div class="brand-icon">
+                        <i data-lucide="shield-check" style="color:#fff;"></i>
+                    </div>
+                    <div class="brand-text-group">
+                        <div class="brand-title">Audit Analytics</div>
+                        <div class="brand-sub">Internal Control Suite</div>
+                    </div>
+                </a>
+                <button id="sidebarCloseBtn" class="sidebar-close-btn" type="button" aria-label="Close navigation drawer" title="Close Menu">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="menu-category">Overview &amp; Workspace</div>
+                <a href="{% url 'dashboard_overview' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard_overview' %}active{% endif %}">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Executive Dashboard</span>
+                </a>
+                <a href="{% url 'dashboard_exceptions' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard_exceptions' or request.resolver_match.url_name == 'investigation_detail' %}active{% endif %}">
+                    <i data-lucide="alert-triangle"></i>
+                    <span>Audit Exceptions</span>
+                </a>
+                <a href="{% url 'dashboard_financial' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard_financial' %}active{% endif %}">
+                    <i data-lucide="pie-chart"></i>
+                    <span>Financial Analysis</span>
+                </a>
+                <a href="{% url 'vendor_risk_matrix' %}" class="nav-item {% if request.resolver_match.url_name == 'vendor_risk_matrix' %}active{% endif %}">
+                    <i data-lucide="building-2"></i>
+                    <span>Vendor Risk Matrix</span>
+                </a>
+
+                <div class="menu-category">Data & Analytics</div>
+                <a href="{% url 'transaction_list' %}" class="nav-item {% if request.resolver_match.url_name == 'transaction_list' %}active{% endif %}">
+                    <i data-lucide="receipt"></i>
+                    <span>Financial Records</span>
+                </a>
+                <a href="{% url 'sql_explorer' %}" class="nav-item {% if request.resolver_match.url_name == 'sql_explorer' %}active{% endif %}">
+                    <i data-lucide="database"></i>
+                    <span>SQL Analytics</span>
+                </a>
+                <a href="{% url 'etl_upload' %}" class="nav-item {% if request.resolver_match.url_name == 'etl_upload' %}active{% endif %}">
+                    <i data-lucide="upload-cloud"></i>
+                    <span>ETL Pipeline Ingestion</span>
+                </a>
+
+                <div class="menu-category">Governance & Standards</div>
+                <a href="{% url 'reports_index' %}" class="nav-item {% if request.resolver_match.url_name == 'reports_index' %}active{% endif %}">
+                    <i data-lucide="file-text"></i>
+                    <span>Reports & PDF Export</span>
+                </a>
+                <a href="{% url 'audit_policy' %}" class="nav-item {% if request.resolver_match.url_name == 'audit_policy' %}active{% endif %}">
+                    <i data-lucide="shield-alert"></i>
+                    <span>SOX 404 & Policy</span>
+                </a>
+                <a href="{% url 'interview_prep' %}" class="nav-item {% if request.resolver_match.url_name == 'interview_prep' %}active{% endif %}">
+                    <i data-lucide="book-open"></i>
+                    <span>Audit Methodology</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="system-status-pill">
+                    <span class="status-dot pulsing"></span>
+                    <span class="status-label">Engine Online (11 Rules)</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-wrapper">
+            <!-- Top Header Navbar -->
+            <header class="top-navbar">
+                <div class="navbar-left">
+                    <!-- Mobile Hamburger Toggle -->
+                    <button id="mobileMenuBtn" class="mobile-menu-toggle" type="button" aria-label="Open Navigation Menu" title="Open Navigation Menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="page-title">{% block page_title %}Audit Analytics Platform{% endblock %}</div>
+                </div>
+
+                <div class="navbar-right">
+                    <!-- Home / Guide Link -->
+                    <a href="{% url 'landing_page' %}" class="btn btn-secondary nav-action-btn" title="Platform Guide & Instructions">
+                        <i data-lucide="home"></i> <span class="nav-btn-text">Guide / Home</span>
+                    </a>
+
+                    <!-- Upload Dataset Link -->
+                    <a href="{% url 'etl_upload' %}" class="btn btn-secondary nav-action-btn" title="Upload custom CSV or Excel dataset">
+                        <i data-lucide="upload-cloud"></i> <span class="nav-btn-text">Upload Dataset</span>
+                    </a>
+
+                    <!-- Trigger Audit Engine Form -->
+                    <form action="{% url 'run_audit' %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary nav-action-btn" title="Execute all 11 audit detection rules">
+                            <i data-lucide="play-circle"></i> <span class="nav-btn-text">Run Audit Engine</span>
+                        </button>
+                    </form>
+
+                    <!-- Role Switcher Form -->
+                    <form id="roleForm" action="{% url 'switch_role' %}" method="POST" class="role-switcher-container">
+                        {% csrf_token %}
+                        <span class="role-switcher-label">Role:</span>
+                        <select name="role" id="roleSelect" class="role-select" aria-label="Switch User Role">
+                            {% for code, label in ROLE_CHOICES %}
+                                <option value="{{ code }}" {% if ACTIVE_ROLE == code %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </header>
+
+            <!-- Alert Messages Banner -->
+            {% if messages %}
+                <div class="alert-container">
+                    {% for message in messages %}
+                        <div class="alert-banner alert-{{ message.tags|default:'info' }}" role="alert">
+                            <div class="alert-icon">
+                                {% if message.tags == 'error' or message.tags == 'danger' %}
+                                    <i data-lucide="alert-octagon"></i>
+                                {% elif message.tags == 'success' %}
+                                    <i data-lucide="check-circle-2"></i>
+                                {% elif message.tags == 'warning' %}
+                                    <i data-lucide="alert-triangle"></i>
+                                {% else %}
+                                    <i data-lucide="info"></i>
+                                {% endif %}
+                            </div>
+                            <div class="alert-text">{{ message }}</div>
+                            <button type="button" class="alert-close-btn" aria-label="Dismiss alert" onclick="this.parentElement.remove();">
+                                <i data-lucide="x"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Main Dynamic Page Body -->
+            <div class="content-area animate-fade-in">
+                {% block content %}{% endblock %}
+            </div>
+
+            <!-- Global Enterprise Audit Footer -->
+            <footer class="app-footer">
+                <div class="footer-grid">
+                    <div class="footer-col brand-col">
+                        <div class="footer-brand">
+                            <i data-lucide="shield-check" class="footer-logo-icon"></i>
+                            <span class="footer-brand-name">Audit Analytics &amp; Monitoring</span>
+                        </div>
+                        <p class="footer-desc">
+                            Automated enterprise internal control intelligence, Benford's Law distribution analysis, and anomaly detection designed for statutory audit readiness, Sarbanes-Oxley (SOX 404) compliance, and continuous risk monitoring.
+                        </p>
+                        <div class="footer-contact-group">
+                            <a href="tel:+18005552834" class="footer-contact-link" title="Call Audit Hotline">
+                                <i data-lucide="phone"></i>
+                                <span>+1 (800) 555-AUDIT (2834)</span>
+                            </a>
+                            <a href="mailto:audit-desk@internal-controls.org" class="footer-contact-link" title="Email Audit Committee">
+                                <i data-lucide="mail"></i>
+                                <span>audit-desk@internal-controls.org</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4 class="footer-heading">Audit Dashboards</h4>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'landing_page' %}"><i data-lucide="chevron-right"></i> Platform Overview &amp; Guide</a></li>
+                            <li><a href="{% url 'dashboard_overview' %}"><i data-lucide="chevron-right"></i> Executive Overview</a></li>
+                            <li><a href="{% url 'dashboard_exceptions' %}"><i data-lucide="chevron-right"></i> Audit Exception Center</a></li>
+                            <li><a href="{% url 'dashboard_financial' %}"><i data-lucide="chevron-right"></i> Financial Analysis</a></li>
+                            <li><a href="{% url 'vendor_risk_matrix' %}"><i data-lucide="chevron-right"></i> Vendor Risk Matrix</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4 class="footer-heading">Data & Analytics</h4>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'transaction_list' %}"><i data-lucide="chevron-right"></i> General Ledger Records</a></li>
+                            <li><a href="{% url 'sql_explorer' %}"><i data-lucide="chevron-right"></i> SQL Analytics Lab</a></li>
+                            <li><a href="{% url 'etl_upload' %}"><i data-lucide="chevron-right"></i> ETL Pipeline Ingestion</a></li>
+                            <li><a href="{% url 'reports_index' %}"><i data-lucide="chevron-right"></i> Regulatory PDF Reports</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4 class="footer-heading">Governance & Policy</h4>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'audit_policy' %}"><i data-lucide="chevron-right"></i> SOX 404 &amp; PCAOB Policy</a></li>
+                            <li><a href="{% url 'interview_prep' %}"><i data-lucide="chevron-right"></i> Audit Testing Methodology</a></li>
+                            <li><a href="{% url 'export_pdf' %}"><i data-lucide="chevron-right"></i> Download Executive PDF</a></li>
+                            <li><a href="{% url 'login' %}"><i data-lucide="chevron-right"></i> Auditor Sign In</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div class="footer-bottom-copy">
+                        &copy; <span id="copyrightYear">{% now "Y" %}</span> Enterprise Audit Analytics &amp; Control Monitoring System. All rights reserved.
+                    </div>
+                    <div class="footer-bottom-badges">
+                        <span class="footer-badge">SOX 404 Compliant</span>
+                        <span class="footer-badge">COSO Framework</span>
+                        <span class="footer-badge">Statistical Outlier Testing</span>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

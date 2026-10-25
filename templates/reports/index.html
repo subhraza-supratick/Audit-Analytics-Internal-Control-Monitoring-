@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit Reports & Regulatory PDF Compliance | Audit Analytics{% endblock %}
+{% block meta_description %}Download executive audit reports in PDF format and raw anomaly records in CSV format for Power BI and executive review.{% endblock %}
+
+{% block page_title %}Management Audit Reports & Exports{% endblock %}
+
+{% block content %}
+<div class="responsive-grid-two" style="margin-bottom: 32px;">
+    <!-- PDF Export Card -->
+    <div class="panel" style="border-left: 4px solid var(--accent-primary);">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;">
+            <div>
+                <h3 style="font-family: 'Outfit'; font-size: 1.25rem; font-weight: 700; margin-bottom: 4px;">Executive Audit Summary (PDF)</h3>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Generates a formal, printable PDF document formatted with executive metrics, top critical exceptions, risk scoring matrix, and auditor working paper references using ReportLab.</p>
+            </div>
+            <i data-lucide="file-text" style="width: 40px; height: 40px; color: var(--accent-glow);"></i>
+        </div>
+
+        <a href="{% url 'export_pdf' %}" class="btn btn-primary">
+            <i data-lucide="download"></i> Download PDF Report
+        </a>
+    </div>
+
+    <!-- CSV Export Card -->
+    <div class="panel" style="border-left: 4px solid var(--accent-emerald);">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;">
+            <div>
+                <h3 style="font-family: 'Outfit'; font-size: 1.25rem; font-weight: 700; margin-bottom: 4px;">Raw Exception Audit Trail CSV Export</h3>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Exports complete audit exception dataset containing ML anomaly scores, explainable risk calculations, vendor master metadata, and working notes for Power BI / Excel.</p>
+            </div>
+            <i data-lucide="sheet" style="width: 40px; height: 40px; color: var(--accent-emerald);"></i>
+        </div>
+
+        <a href="{% url 'export_csv' %}" class="btn btn-success">
+            <i data-lucide="download"></i> Download CSV Data File
+        </a>
+    </div>
+</div>
+
+<!-- Power BI Dashboard Simulation Preview Embed Panel -->
+<div class="panel">
+    <div class="panel-header">
+        <div class="panel-title">
+            <i data-lucide="layout" style="color:var(--accent-glow);"></i> Embedded Power BI Analytical Report Simulation
+        </div>
+        <span class="badge badge-status">Power BI Desktop + Django Integration</span>
+    </div>
+
+    <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 30px; text-align: center;">
+        <i data-lucide="area-chart" style="width: 56px; height: 56px; color: var(--accent-glow); margin-bottom: 16px;"></i>
+        <h4 style="font-family: 'Outfit'; font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Interactive Power BI Data Model</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 650px; margin: 0 auto 20px;">
+            This portfolio project directly exports PostgreSQL / SQLite schemas to Power BI for interactive executive slicers, vendor risk heatmaps, and financial exposure drill-through analytics.
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'export_csv' %}" class="btn btn-secondary"><i data-lucide="database"></i> Download Power BI Data Source (CSV)</a>
+            <a href="{% url 'sql_explorer' %}" class="btn btn-secondary"><i data-lucide="terminal"></i> View Power BI DirectQuery SQL Views</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit Testing Methodology & Technical Standards | Audit Analytics{% endblock %}
+{% block meta_description %}Technical audit testing methodology, internal control objectives, statistical anomaly heuristics, and audit documentation standards.{% endblock %}
+
+{% block page_title %}Audit Testing Methodology & Standards{% endblock %}
+
+{% block content %}
+<!-- Section 1: Audit Lifecycle & Testing Architecture -->
+<div class="panel" style="background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%); border-color: rgba(59, 130, 246, 0.4);">
+    <div class="panel-header" style="border-bottom: none; margin-bottom: 12px; padding-bottom: 0;">
+        <div class="panel-title"><i data-lucide="book-open" style="color:var(--accent-glow);"></i> Continuous Internal Control Monitoring Lifecycle</div>
+        <span class="badge badge-status">IIA &amp; COSO Aligned</span>
+    </div>
+
+    <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">
+        <strong>Standardized Control Testing Flow:</strong> General Ledger Extraction &rarr; Schema &amp; Quality Validation (ETL) &rarr; Automated Heuristic Rules Engine &rarr; Statistical Outlier Scoring (Z-Score &amp; Isolation Forest) &rarr; Transparent Risk Weighting &rarr; Auditor Working Papers &amp; Root Cause Investigation &rarr; Executive Audit Committee Reporting.
+    </p>
+</div>
+
+<!-- Section 2: Control Objectives & Scope -->
+<div class="panel">
+    <div class="panel-header">
+        <div class="panel-title"><i data-lucide="shield-check" style="color:var(--accent-emerald);"></i> Core Control Objectives &amp; Audit Scope</div>
+    </div>
+    
+    <div style="background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+        <h4 style="color: var(--accent-glow); margin-bottom: 12px; font-family: 'Outfit'; font-size: 1.05rem;">Substantive Testing &amp; Internal Control Monitoring Standards</h4>
+        <ul style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.8; padding-left: 20px;">
+            <li><strong>Automated Ingestion &amp; Validation:</strong> Validates transactional completeness, data types, mandatory counterparty IDs, and schema consistency prior to audit staging.</li>
+            <li><strong>Substantive Control Heuristics:</strong> 11 specialized deterministic tests covering duplicate invoices/disbursements, approval threshold structuring, weekend/after-hours postings, and employee-vendor counterparty conflicts.</li>
+            <li><strong>Statistical Outlier Analysis:</strong> Unsupervised machine learning (Isolation Forest) and first-digit Benford's Law distribution testing to detect abnormal disbursement patterns without pre-labeled fraud samples.</li>
+            <li><strong>Auditor Working Papers &amp; Traceability:</strong> Immutable audit trails, status progression (Open, Under Review, Escalated, Resolved), explainable risk components, and regulatory PDF export.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Section 3: Technical Control Testing Standards -->
+<div class="panel">
+    <div class="panel-header">
+        <div class="panel-title"><i data-lucide="help-circle" style="color:var(--accent-glow);"></i> Technical Audit Testing Standards &amp; FAQs</div>
+    </div>
+
+    <div class="flashcard-grid">
+        <div class="flashcard">
+            <div class="flashcard-q">1. What is the fundamental difference between an audit exception and fraud?</div>
+            <div class="flashcard-a">An audit exception is a red flag indicating a failure or departure from internal control policies (e.g., missing purchase order, after-hours posting, duplicate invoice). It is an evidentiary signal requiring human auditor investigation and substantive review, not definitive proof of illegal fraud or criminal intent.</div>
+        </div>
+
+        <div class="flashcard">
+            <div class="flashcard-q">2. How are duplicate invoices detected across disaggregated ledgers?</div>
+            <div class="flashcard-a">The system executes grouping queries across vendor ID, invoice date, and billing amount with HAVING COUNT(*) > 1 filters. For fuzzy matching, character normalization and window functions (RANK() OVER) catch subtle variations in invoice reference numbering.</div>
+        </div>
+
+        <div class="flashcard">
+            <div class="flashcard-q">3. Why is unsupervised outlier detection utilized alongside rule-based tests?</div>
+            <div class="flashcard-a">Deterministic rules only catch known historical evasion patterns. Unsupervised statistical algorithms (Isolation Forest and Z-score distributions) identify multi-dimensional structural anomalies in spend magnitude, timing, and velocity without requiring historical labeled fraud examples.</div>
+        </div>
+
+        <div class="flashcard">
+            <div class="flashcard-q">4. How is the explainable risk score (0-100) calculated?</div>
+            <div class="flashcard-a">To maintain transparency for regulatory bodies, the platform combines deterministic rule severity weights, transaction dollar magnitude, historical deviation factors, and statistical anomaly metrics into a standardized 0-100 composite score with explicit explanation breakdowns.</div>
+        </div>
+
+        <div class="flashcard">
+            <div class="flashcard-q">5. How does the ETL pipeline maintain data integrity and quality?</div>
+            <div class="flashcard-a">The ingestion engine checks file schema, enforces non-null constraints on primary transactional fields, verifies foreign-key counterparties, strips erroneous currency formatting, and computes an automated Data Quality Score prior to database persistence.</div>
+        </div>
+
+        <div class="flashcard">
+            <div class="flashcard-q">6. How is Segregation of Duties (SoD) enforced in the platform?</div>
+            <div class="flashcard-a">Role-Based Access Control (RBAC) separates responsibilities across Administrator, Senior Auditor, Financial Analyst, and Compliance Viewer roles, ensuring that individuals who ingest data cannot unilaterally close or reclassify audit exceptions without review logs.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

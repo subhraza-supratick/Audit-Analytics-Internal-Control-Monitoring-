@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Investigation EXC-{{ exception.exception_id }}: {{ exception.exception_type }} | Audit Analytics{% endblock %}
+{% block meta_description %}Deep-dive audit investigation into exception EXC-{{ exception.exception_id }}, review explainable risk factors, isolation forest scores, and log working paper notes.{% endblock %}
+
+{% block page_title %}Audit Exception Investigation: EXC-{{ exception.exception_id }}{% endblock %}
+
+{% block content %}
+<div class="responsive-grid-split" style="gap: 24px;">
+    <div>
+        <!-- Exception Overview Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i data-lucide="shield-alert" style="color: #f87171;"></i> {{ exception.exception_type }}
+                </div>
+                <div>
+                    {% if exception.severity == 'CRITICAL' %}
+                        <span class="badge badge-critical">Critical Severity</span>
+                    {% elif exception.severity == 'HIGH' %}
+                        <span class="badge badge-high">High Severity</span>
+                    {% else %}
+                        <span class="badge badge-medium">{{ exception.severity }} Severity</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.6; margin-bottom: 20px; background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: var(--radius-md); border-left: 4px solid var(--accent-primary);">
+                {{ exception.description }}
+            </p>
+
+            <!-- Lineage Flowchart -->
+            <div style="margin-bottom: 24px;">
+                <h4 style="font-family: 'Outfit'; font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Transaction Lineage Trace</h4>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: rgba(15, 23, 42, 0.8); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+                    <div style="background: rgba(59, 130, 246, 0.15); color: #93c5fd; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
+                        <i data-lucide="building"></i> Vendor: {{ exception.vendor.vendor_name|default:"Internal" }}
+                    </div>
+                    <i data-lucide="arrow-right" style="color: var(--text-dim);"></i>
+                    <div style="background: rgba(59, 130, 246, 0.15); color: #93c5fd; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
+                        <i data-lucide="file-text"></i> Tx ID: {{ exception.transaction_id }}
+                    </div>
+                    <i data-lucide="arrow-right" style="color: var(--text-dim);"></i>
+                    <div style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
+                        <i data-lucide="alert-circle"></i> Amount: ₹{{ exception.amount|floatformat:2 }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Score Explanation Breakdown -->
+            <h4 style="font-family: 'Outfit'; font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Explainable Risk Score Components</h4>
+            <div class="responsive-grid-three" style="margin-bottom: 24px;">
+                <div style="background: rgba(15, 23, 42, 0.8); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+                    <div style="font-size: 0.78rem; color: var(--text-dim);">Overall Risk Score</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #f87171; font-family: 'JetBrains Mono';">{{ exception.risk_score }} / 100</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.8); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+                    <div style="font-size: 0.78rem; color: var(--text-dim);">Isolation Forest Anomaly</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #c084fc; font-family: 'JetBrains Mono';">{{ exception.ml_anomaly_score|floatformat:3 }}</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.8); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+                    <div style="font-size: 0.78rem; color: var(--text-dim);">Detected Timestamp</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-top: 6px;">{{ exception.detected_date|date:"Y-m-d H:i" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Trail Timeline Log -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i data-lucide="history" style="color:var(--accent-glow);"></i> Audit Log Trail History</div>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Old State</th>
+                            <th>New State</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td style="font-size: 0.8rem; color: var(--text-dim);">{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+                            <td style="font-weight: 600;">{{ log.user }}</td>
+                            <td><span class="badge badge-status">{{ log.action }}</span></td>
+                            <td style="font-size: 0.82rem; color: var(--text-muted);">{{ log.old_value }}</td>
+                            <td style="font-size: 0.82rem; color: #93c5fd;">{{ log.new_value }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                Initial system detection log created. No manual auditor status changes logged yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auditor Action Form Panel -->
+    <div>
+        <div class="panel" style="position: sticky; top: 90px;">
+            <div class="panel-header">
+                <div class="panel-title"><i data-lucide="user-check" style="color:var(--accent-glow);"></i> Auditor Workflow Action</div>
+            </div>
+
+            <form action="{% url 'update_exception_status' exception.exception_id %}" method="POST">
+                {% csrf_token %}
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Investigation Status</label>
+                    <select id="investigationStatusSelect" name="status" style="width: 100%; background: #0f172a; border: 1px solid var(--border-glass); color: #fff; padding: 10px 14px; border-radius: var(--radius-md);">
+                        <option value="OPEN" {% if exception.status == 'OPEN' %}selected{% endif %}>Open (Unresolved)</option>
+                        <option value="UNDER_REVIEW" {% if exception.status == 'UNDER_REVIEW' %}selected{% endif %}>Under Active Review</option>
+                        <option value="RESOLVED" {% if exception.status == 'RESOLVED' %}selected{% endif %}>Resolved (Remediated)</option>
+                        <option value="FALSE_POSITIVE" {% if exception.status == 'FALSE_POSITIVE' %}selected{% endif %}>False Positive</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Assigned Auditor</label>
+                    <input type="text" name="assigned_to" value="{{ exception.assigned_to }}" style="width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: #fff; padding: 10px 14px; border-radius: var(--radius-md);">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Audit Notes & Remediation</label>
+                    <textarea name="review_notes" rows="4" placeholder="Enter auditor working paper notes..." style="width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: #fff; padding: 10px 14px; border-radius: var(--radius-md); font-family: 'Inter', sans-serif;">{{ exception.review_notes|default:"" }}</textarea>
+                </div>
+
+                {% if IS_AUDITOR %}
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i data-lucide="save"></i> Update Exception Record
+                </button>
+                {% else %}
+                <button type="button" class="btn btn-secondary" style="width: 100%; cursor: not-allowed;" disabled>
+                    <i data-lucide="lock"></i> Read-Only (Viewer Role)
+                </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

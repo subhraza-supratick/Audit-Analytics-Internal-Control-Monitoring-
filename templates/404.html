@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}404 - Audit Record Not Found | Audit Analytics Platform{% endblock %}
+{% block meta_description %}The requested audit transaction or system endpoint could not be located in the internal control database.{% endblock %}
+
+{% block page_title %}404 - Resource Not Found{% endblock %}
+
+{% block content %}
+<div style="max-width: 680px; margin: 40px auto; text-align: center; padding: 20px;">
+    <div class="panel" style="padding: 48px 32px; border-color: rgba(239, 68, 68, 0.35); background: linear-gradient(135deg, rgba(30, 58, 138, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);">
+        <div style="width: 80px; height: 80px; border-radius: 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); display: inline-flex; align-items: center; justify-content: center; color: #f87171; margin-bottom: 24px; box-shadow: 0 0 30px rgba(239, 68, 68, 0.25);">
+            <i data-lucide="shield-alert" style="width: 44px; height: 44px;"></i>
+        </div>
+
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 700; color: #fca5a5; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">
+            HTTP 404 &bull; Missing Audit Record
+        </div>
+
+        <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.4rem; font-weight: 800; color: #fff; margin-bottom: 16px; letter-spacing: -0.02em;">
+            Ledger Page Not Found
+        </h1>
+
+        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; max-width: 520px; margin: 0 auto 32px auto;">
+            The requested audit record, transaction trace, or system URL does not exist or has been archived. Check the transaction ID or navigate back to the audit control center.
+        </p>
+
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'dashboard_overview' %}" class="btn btn-primary" style="padding: 12px 24px;">
+                <i data-lucide="layout-dashboard"></i> Return to Executive Dashboard
+            </a>
+            <a href="{% url 'dashboard_exceptions' %}" class="btn btn-secondary" style="padding: 12px 24px;">
+                <i data-lucide="alert-triangle"></i> View Audit Exceptions
+            </a>
+            <a href="{% url 'transaction_list' %}" class="btn btn-secondary" style="padding: 12px 24px;">
+                <i data-lucide="receipt"></i> Search Ledger
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

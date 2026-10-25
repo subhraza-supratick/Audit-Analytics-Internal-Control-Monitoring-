@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Financial Analysis & Multi-Dimensional Ledger | Audit Analytics{% endblock %}
+{% block meta_description %}Multi-dimensional enterprise financial analysis, vendor spend concentration, cost center budget execution, and payment transaction telemetry.{% endblock %}
+
+{% block page_title %}Financial Analysis & Spend Intelligence{% endblock %}
+
+{% block content %}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <span class="kpi-title">Total Disbursed Spend</span>
+            <div class="kpi-icon"><i data-lucide="credit-card"></i></div>
+        </div>
+        <div class="kpi-value">₹{{ payment_summary.total|default:0|floatformat:2 }}</div>
+        <div class="kpi-sub">Across {{ payment_summary.cnt|default:0 }} payments</div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <span class="kpi-title">Average Payment Value</span>
+            <div class="kpi-icon"><i data-lucide="calculator"></i></div>
+        </div>
+        <div class="kpi-value">₹{{ payment_summary.avg|default:0|floatformat:2 }}</div>
+        <div class="kpi-sub">Per executed wire transaction</div>
+    </div>
+</div>
+
+<div class="responsive-grid-two" style="margin-bottom: 24px;">
+    <!-- Top Vendor Spend Panel -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title"><i data-lucide="building" style="color:var(--accent-glow);"></i> Top 10 Vendor Spend Concentration</div>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Vendor Name</th>
+                        <th>Risk Rating</th>
+                        <th>Invoices</th>
+                        <th>Total Spend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in vendor_spend %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ v.vendor_name }}</td>
+                        <td>
+                            {% if v.risk_category == 'CRITICAL' %}
+                                <span class="badge badge-critical">Critical</span>
+                            {% elif v.risk_category == 'HIGH' %}
+                                <span class="badge badge-high">High</span>
+                            {% else %}
+                                <span class="badge badge-low">{{ v.risk_category }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ v.invoice_count }}</td>
+                        <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ v.total_spend|default:0|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Department Spend Panel -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title"><i data-lucide="briefcase" style="color:var(--accent-glow);"></i> Departmental Budget Execution</div>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Cost Center</th>
+                        <th>POs Issued</th>
+                        <th>Total PO Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in dept_spend %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ d.department_name }}</td>
+                        <td><span class="badge badge-status">{{ d.cost_center }}</span></td>
+                        <td>{{ d.po_count }}</td>
+                        <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ d.total_spend|default:0|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

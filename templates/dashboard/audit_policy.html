@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Audit Governance & Internal Control Monitoring Policy | Audit Analytics Platform{% endblock %}
+{% block meta_description %}Enterprise internal control monitoring standards, Sarbanes-Oxley (SOX 404) compliance policies, and data confidentiality frameworks.{% endblock %}
+
+{% block page_title %}Audit Governance & System Policies{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="panel" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div class="panel-header" style="border-bottom: none; padding-bottom: 0;">
+            <div class="panel-title"><i data-lucide="shield-check" style="color:var(--accent-glow);"></i> Enterprise Internal Control Charter</div>
+            <span class="badge badge-status">SOX 404 &amp; PCAOB Compliant</span>
+        </div>
+        <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.7; margin-top: 14px;">
+            The Audit Analytics &amp; Continuous Internal Control Monitoring Platform operates under strict corporate governance guidelines. All transaction monitoring algorithms, SQL audit heuristics, and machine learning anomaly scores adhere to regulatory mandates including the Sarbanes-Oxley Act of 2002 (Sections 302 and 404) and COSO Internal Control Framework.
+        </p>
+    </div>
+
+    <div class="panel" style="margin-bottom: 24px;">
+        <h3 style="font-family: 'Outfit'; font-size: 1.2rem; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+            <i data-lucide="lock" style="color:var(--accent-glow);"></i> Data Confidentiality &amp; Immutable Audit Trail
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 14px;">
+            All financial transactions ingested into the platform undergo cryptographic hashing and timestamped logging. No auditor or system administrator may alter historical invoice amounts, payment receipts, or employee expense claims without generating a traceable entry in the persistent <code style="color: #93c5fd;">AuditLog</code> ledger.
+        </p>
+        <ul style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.8; padding-left: 20px;">
+            <li><strong>Role-Based Access Control (RBAC):</strong> Access privileges strictly segregated between Auditor, Analyst, Executive Viewer, and System Admin roles.</li>
+            <li><strong>Automated Red-Flag Heuristics:</strong> 11 deterministic rule tests operating alongside Scikit-Learn Isolation Forest algorithms.</li>
+            <li><strong>Auditor Working Papers:</strong> Exception review notes and status updates recorded with immutable timestamp and reviewer metadata.</li>
+        </ul>
+    </div>
+
+    <div class="panel">
+        <h3 style="font-family: 'Outfit'; font-size: 1.2rem; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+            <i data-lucide="phone-call" style="color:var(--accent-emerald);"></i> Audit Committee &amp; Lead Auditor Contact
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 16px;">
+            For regulatory inquiries, whistleblower reports, or anomaly escalation, contact the internal audit executive desk:
+        </p>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <a href="tel:+18005552834" class="btn btn-secondary">
+                <i data-lucide="phone"></i> +1 (800) 555-AUDIT (2834)
+            </a>
+            <a href="mailto:audit-desk@internal-controls.org" class="btn btn-secondary">
+                <i data-lucide="mail"></i> audit-desk@internal-controls.org
+            </a>
+            <a href="{% url 'dashboard_overview' %}" class="btn btn-primary">
+                <i data-lucide="arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

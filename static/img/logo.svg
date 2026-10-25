@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48">
+  <defs>
+    <linearGradient id="logoShield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="logoCheck" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#6ee7b7" />
+    </linearGradient>
+    <linearGradient id="logoText" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#93c5fd" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(4, 4)">
+    <rect width="40" height="40" rx="10" fill="url(#logoShield)" />
+    <path d="M20 7 L32 12 V24 C32 31 27 36 20 38 C13 36 8 31 8 24 V12 Z" fill="#0b1329" stroke="#60a5fa" stroke-width="1.5"/>
+    <path d="M14 23 L18 27 L26 17" fill="none" stroke="url(#logoCheck)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="56" y="24" font-family="'Outfit', 'Inter', sans-serif" font-weight="700" font-size="17" fill="url(#logoText)" letter-spacing="-0.02em">Audit Analytics</text>
+  <text x="56" y="38" font-family="'Inter', sans-serif" font-weight="600" font-size="9" fill="#94a3b8" letter-spacing="0.12em">DELOITTE EDITION</text>
+</svg>

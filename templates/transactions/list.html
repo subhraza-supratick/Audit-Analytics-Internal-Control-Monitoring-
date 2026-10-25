@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Financial Transaction Records & General Ledger | Audit Analytics{% endblock %}
+{% block meta_description %}Explore and search enterprise financial records including invoices, wire payments, purchase orders, and employee expense reports with pagination.{% endblock %}
+
+{% block page_title %}Financial Transaction Ledger{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <!-- Tabs Header -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 14px; flex-wrap: wrap;">
+        <a href="?type=invoices" class="btn {% if tx_type == 'invoices' %}btn-primary{% else %}btn-secondary{% endif %}">Invoices</a>
+        <a href="?type=payments" class="btn {% if tx_type == 'payments' %}btn-primary{% else %}btn-secondary{% endif %}">Payments</a>
+        <a href="?type=purchase_orders" class="btn {% if tx_type == 'purchase_orders' %}btn-primary{% else %}btn-secondary{% endif %}">Purchase Orders</a>
+        <a href="?type=expenses" class="btn {% if tx_type == 'expenses' %}btn-primary{% else %}btn-secondary{% endif %}">Employee Expenses</a>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="GET" style="display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap;">
+        <input type="hidden" name="type" value="{{ tx_type }}">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search ID, vendor, employee..." style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: #fff; padding: 10px 16px; border-radius: var(--radius-md); flex: 1; min-width: 200px;">
+        <button type="submit" class="btn btn-primary"><i data-lucide="search"></i> Search</button>
+    </form>
+
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    {% if tx_type == 'invoices' %}
+                        <th>Invoice ID</th>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Tax Amount</th>
+                        <th>Status</th>
+                    {% elif tx_type == 'payments' %}
+                        <th>Payment ID</th>
+                        <th>Vendor</th>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                    {% elif tx_type == 'purchase_orders' %}
+                        <th>PO ID</th>
+                        <th>Vendor</th>
+                        <th>Employee</th>
+                        <th>PO Date</th>
+                        <th>Amount</th>
+                        <th>Approval Status</th>
+                    {% else %}
+                        <th>Expense ID</th>
+                        <th>Employee</th>
+                        <th>Expense Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in page_obj %}
+                <tr>
+                    {% if tx_type == 'invoices' %}
+                        <td style="font-weight: 700; color: var(--accent-glow);">{{ item.invoice_id }}</td>
+                        <td>{{ item.vendor.vendor_name }}</td>
+                        <td>{{ item.invoice_date }}</td>
+                        <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ item.amount|floatformat:2 }}</td>
+                        <td>₹{{ item.tax_amount|floatformat:2 }}</td>
+                        <td><span class="badge badge-status">{{ item.payment_status }}</span></td>
+                    {% elif tx_type == 'payments' %}
+                        <td style="font-weight: 700; color: var(--accent-glow);">{{ item.payment_id }}</td>
+                        <td>{{ item.vendor.vendor_name }}</td>
+                        <td>{{ item.payment_date|date:"Y-m-d H:i" }}</td>
+                        <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ item.amount|floatformat:2 }}</td>
+                        <td><span class="badge badge-status">{{ item.payment_method }}</span></td>
+                    {% elif tx_type == 'purchase_orders' %}
+                        <td style="font-weight: 700; color: var(--accent-glow);">{{ item.po_id }}</td>
+                        <td>{{ item.vendor.vendor_name }}</td>
+                        <td>{{ item.employee.name }}</td>
+                        <td>{{ item.po_date }}</td>
+                        <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ item.amount|floatformat:2 }}</td>
+                        <td><span class="badge badge-status">{{ item.approval_status }}</span></td>
+                    {% else %}
+                        <td style="font-weight: 700; color: var(--accent-glow);">{{ item.expense_id }}</td>
+                        <td>{{ item.employee.name }}</td>
+                        <td>{{ item.expense_date }}</td>
+                        <td><span class="badge badge-status">{{ item.category }}</span></td>
+                        <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ item.amount|floatformat:2 }}</td>
+                        <td style="font-size: 0.82rem; color: var(--text-muted);">{{ item.description|truncatechars:40 }}</td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                        No transaction records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <div style="display: flex; gap: 8px;">
+            {% if page_obj.has_previous %}
+                <a href="?type={{ tx_type }}&page={{ page_obj.previous_page_number }}&q={{ query }}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">Previous</a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="?type={{ tx_type }}&page={{ page_obj.next_page_number }}&q={{ query }}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">Next</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

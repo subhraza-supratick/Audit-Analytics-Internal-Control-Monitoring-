@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit Exception Center & Red-Flag Anomalies | Audit Analytics{% endblock %}
+{% block meta_description %}Explore and filter flagged audit exceptions, segregation of duties anomalies, split purchases, duplicate invoices, and Isolation Forest ML risk scores.{% endblock %}
+
+{% block page_title %}Audit Exceptions & Risk Explorer{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <!-- Filters & Search Bar -->
+    <form method="GET" style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px;">
+        <input type="text" name="q" value="{{ search_q }}" placeholder="Search rule, vendor, tx ID..." style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: #fff; padding: 10px 16px; border-radius: var(--radius-md); flex: 1; min-width: 200px;">
+        
+        <select name="severity" style="background: #0f172a; border: 1px solid var(--border-glass); color: #fff; padding: 10px 16px; border-radius: var(--radius-md);">
+            <option value="">All Severities</option>
+            <option value="CRITICAL" {% if current_severity == 'CRITICAL' %}selected{% endif %}>Critical</option>
+            <option value="HIGH" {% if current_severity == 'HIGH' %}selected{% endif %}>High</option>
+            <option value="MEDIUM" {% if current_severity == 'MEDIUM' %}selected{% endif %}>Medium</option>
+            <option value="LOW" {% if current_severity == 'LOW' %}selected{% endif %}>Low</option>
+        </select>
+
+        <select name="status" style="background: #0f172a; border: 1px solid var(--border-glass); color: #fff; padding: 10px 16px; border-radius: var(--radius-md);">
+            <option value="">All Statuses</option>
+            <option value="OPEN" {% if current_status == 'OPEN' %}selected{% endif %}>Open</option>
+            <option value="UNDER_REVIEW" {% if current_status == 'UNDER_REVIEW' %}selected{% endif %}>Under Review</option>
+            <option value="RESOLVED" {% if current_status == 'RESOLVED' %}selected{% endif %}>Resolved</option>
+            <option value="FALSE_POSITIVE" {% if current_status == 'FALSE_POSITIVE' %}selected{% endif %}>False Positive</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary"><i data-lucide="filter"></i> Filter</button>
+        <a href="{% url 'dashboard_exceptions' %}" class="btn btn-secondary">Reset</a>
+    </form>
+
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>EXC ID</th>
+                    <th>Exception Rule</th>
+                    <th>Tx Type</th>
+                    <th>Risk Score</th>
+                    <th>Severity</th>
+                    <th>Vendor / Entity</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Assigned To</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exc in exceptions %}
+                <tr>
+                    <td style="font-weight: 700; color: var(--accent-glow);">EXC-{{ exc.exception_id }}</td>
+                    <td>
+                        <div style="font-weight: 600;">{{ exc.exception_type }}</div>
+                        <div style="font-size: 0.76rem; color: var(--text-dim);">Tx: {{ exc.transaction_id }}</div>
+                    </td>
+                    <td><span class="badge badge-status">{{ exc.transaction_type }}</span></td>
+                    <td style="font-weight: 700; font-family: 'JetBrains Mono';">
+                        <span style="display: inline-block; width: 32px; height: 32px; line-height: 32px; text-align: center; border-radius: 50%; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">{{ exc.risk_score }}</span>
+                    </td>
+                    <td>
+                        {% if exc.severity == 'CRITICAL' %}
+                            <span class="badge badge-critical">Critical</span>
+                        {% elif exc.severity == 'HIGH' %}
+                            <span class="badge badge-high">High</span>
+                        {% elif exc.severity == 'MEDIUM' %}
+                            <span class="badge badge-medium">Medium</span>
+                        {% else %}
+                            <span class="badge badge-low">Low</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ exc.vendor.vendor_name|default:"Internal Employee" }}</td>
+                    <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ exc.amount|floatformat:2 }}</td>
+                    <td><span class="badge badge-status">{{ exc.get_status_display }}</span></td>
+                    <td style="font-size: 0.82rem; color: var(--text-muted);">{{ exc.assigned_to }}</td>
+                    <td>
+                        <a href="{% url 'investigation_detail' exc.exception_id %}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem;">
+                            Investigate
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                        No audit exceptions match the selected filter criteria.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

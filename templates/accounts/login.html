@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Auditor Authentication & Access Control | Audit Analytics{% endblock %}
+{% block meta_description %}Auditor authentication gateway for Role-Based Access Control (RBAC) simulated workspaces: Admin, Auditor, Analyst, and Executive Viewer.{% endblock %}
+
+{% block page_title %}User Authentication & RBAC Login{% endblock %}
+
+{% block content %}
+<div style="max-width: 450px; margin: 40px auto;" class="panel">
+    <div style="text-align: center; margin-bottom: 24px;">
+        <div class="brand-icon" style="margin: 0 auto 12px; width: 54px; height: 54px;">
+            <i data-lucide="shield-check" style="width: 28px; height: 28px; color: #fff;"></i>
+        </div>
+        <h3 style="font-family: 'Outfit'; font-size: 1.4rem; font-weight: 700;">Enterprise Audit Portal Login</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Sign in to access your assigned role workspace.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Auditor Username</label>
+            <input type="text" name="username" value="auditor_admin" required style="width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: #fff; padding: 10px 14px; border-radius: var(--radius-md);">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Password Key</label>
+            <input type="password" name="password" value="AuditSecure2026!" required style="width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: #fff; padding: 10px 14px; border-radius: var(--radius-md);">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; font-size: 0.95rem;">
+            <i data-lucide="log-in"></i> Sign In to Audit Dashboard
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Vendor Risk Matrix & Counterparty Surveillance | Audit Analytics{% endblock %}
+{% block meta_description %}Monitor vendor risk categories, spend concentration, transaction frequencies, and vendor-associated audit exceptions.{% endblock %}
+
+{% block page_title %}Vendor Risk Matrix & Entity Surveillance{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-header">
+        <div class="panel-title"><i data-lucide="shield" style="color:var(--accent-glow);"></i> Master Vendor Directory Risk Profile</div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Vendor ID</th>
+                    <th>Vendor Name</th>
+                    <th>Type</th>
+                    <th>Region</th>
+                    <th>Risk Category</th>
+                    <th>Total Spend</th>
+                    <th>Tx Count</th>
+                    <th>Exceptions</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in vendors %}
+                <tr>
+                    <td style="font-weight: 700; color: var(--accent-glow);">{{ v.vendor_id }}</td>
+                    <td style="font-weight: 600;">{{ v.vendor_name }}</td>
+                    <td>{{ v.vendor_type }}</td>
+                    <td>{{ v.region }}</td>
+                    <td>
+                        {% if v.risk_category == 'CRITICAL' %}
+                            <span class="badge badge-critical">Critical Risk</span>
+                        {% elif v.risk_category == 'HIGH' %}
+                            <span class="badge badge-high">High Risk</span>
+                        {% elif v.risk_category == 'MEDIUM' %}
+                            <span class="badge badge-medium">Medium</span>
+                        {% else %}
+                            <span class="badge badge-low">Low</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-weight: 700; font-family: 'JetBrains Mono';">₹{{ v.total_spend|default:0|floatformat:2 }}</td>
+                    <td>{{ v.tx_count }}</td>
+                    <td style="font-weight: 700; color: #f87171;">{{ v.exception_count }}</td>
+                    <td><span class="badge badge-status">{{ v.status }}</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                        No vendors registered in database yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
